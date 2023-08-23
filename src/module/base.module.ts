@@ -1,7 +1,5 @@
 export interface BuildInputs {
-  image?: string; // digest
   directory?: string;
-  filename?: string;
 }
 
 export interface ApplyInputs {

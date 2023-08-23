@@ -13,7 +13,7 @@ const account_credentials = {
 const datacenter_id = 'test-datacenter-id';
 
 const pulumi_module = new PulumiModule();
-const build_sha = await pulumi_module.build({ filename: 'Dockerfile', directory });
+const build_sha = await pulumi_module.build({ directory });
 
 await pulumi_module.apply({ 
   datacenter_id,

@@ -7,7 +7,7 @@ import path from 'path';
 export class PulumiModule extends BaseModule {
   // build an image that pulumi code can be run on
   async build(inputs: BuildInputs): Promise<string> {
-    const args = ['build', '--file', inputs.filename || 'Dockerfile', '--quiet', '.'];
+    const args = ['build', '--file', 'Dockerfile', '.'];
     const output = spawnSync('docker', args, { cwd: inputs.directory }); 
     this.checkCommandOutput(output);
     return output.stdout.toString().replace('sha256:', '').trim();
@@ -27,17 +27,21 @@ export class PulumiModule extends BaseModule {
       fs.writeFileSync(credentials_file, '{}');
     }
 
+    // set variables as secrets for the pulumi stack
     let pulumi_config = '';
     if (Object.keys(inputs.config || {}).length) {
       const config_pairs = Object.entries(inputs.config).map(([key, value]) => `--secret ${key}=${value}`); 
       pulumi_config = `pulumi config --stack ${inputs.datacenter_id} set-all ${config_pairs} &&`;
     }
 
+    // set host and container volumes
     const container_state_directory = '/app/pulumi-state';
     const host_state_directory = path.join(os.homedir(), '.config', 'arcctl', 'pulumi-state', inputs.datacenter_id);
     if (!fs.existsSync(host_state_directory)) {
       fs.mkdirSync(host_state_directory);
     }
+
+    // log in and initialize pulumi stack on the local machine
     const login_result = spawnSync('pulumi', ['login', `file://${host_state_directory}`], { stdio, env: { PATH: process.env.PATH } });
     this.checkCommandOutput(login_result);
     const init_result = spawnSync('pulumi', ['stack', 'init', '--stack', inputs.datacenter_id], { stdio, cwd: inputs.directory, env: { PULUMI_CONFIG_PASSPHRASE: '', PATH: process.env.PATH } });
@@ -56,12 +60,11 @@ export class PulumiModule extends BaseModule {
       'bash', 
       ...environment, 
       '-v',
-      `${host_state_directory}:${container_state_directory}`,
+      `${host_state_directory}:${container_state_directory}`, // mount pulumi stack state to container
       inputs.image, 
       '-c', 
       `${pulumi_login} ${pulumi_config} pulumi ${apply_or_destroy} --stack ${inputs.datacenter_id} --non-interactive --yes`
     ];
-
     const docker_result = spawnSync('docker', args, { stdio, cwd: inputs.directory }); 
     this.checkCommandOutput(docker_result);
   }
