@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+service ArcctlPulumi {
+  rpc Build(BuildRequest) returns (BuildResponse) {}
+  rpc Apply(ApplyRequest) returns (ApplyResponse) {}
+}
+
+message BuildRequest {
+  string serializedDocuments = 1;
+}
+
+message BuildResponse {
+  string buildSha = 1;
+}
+
+message ApplyRequest {
+  string serializedPulumiState = 1;
+}
+
+message ApplyResponse {
+  string serializedPulumiState = 1;
+}
