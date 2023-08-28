@@ -1,11 +1,11 @@
-import { ApplyInputs, BaseModule, BuildInputs } from "./base.module.js";
+import { ApplyInputs, BaseModule, BuildInputs } from "./base.module";
 import { SpawnSyncReturns, spawnSync } from 'child_process';
 // import { State } from '@pulumi/pulumi' // TODO: import/use state interface for apply return type
 
 export class PulumiModule extends BaseModule {
   // build an image that pulumi code can be run on
   async build(inputs: BuildInputs): Promise<string> {
-    const args = ['build', '--file', 'Dockerfile', '.', '--quiet'];
+    const args = ['build', '--file', 'Dockerfile', inputs.directory, '--quiet'];
     const output = spawnSync('docker', args, { cwd: inputs.directory }); 
     this.checkCommandOutput(output);
     return output.stdout.toString().replace('sha256:', '').trim();

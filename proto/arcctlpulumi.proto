@@ -6,17 +6,21 @@ service ArcctlPulumi {
 }
 
 message BuildRequest {
-  string serializedDocuments = 1;
+  string directory = 1;
 }
 
 message BuildResponse {
-  string buildSha = 1;
+  string image = 1;
 }
 
 message ApplyRequest {
-  string serializedPulumiState = 1;
+  string pulumi_state = 1;
+  string datacenter_id = 2;
+  string image = 3;
+  map<string, string> inputs = 4;
+  map<string, string> account_credentials = 5;
 }
 
 message ApplyResponse {
-  string serializedPulumiState = 1;
+  string pulumi_state = 1;
 }

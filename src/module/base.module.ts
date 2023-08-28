@@ -1,5 +1,5 @@
 export interface BuildInputs {
-  directory?: string;
+  directory: string;
 }
 
 export interface ApplyInputs {

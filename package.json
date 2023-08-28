@@ -2,15 +2,16 @@
   "devDependencies": {
     "@types/node": "^20.5.0",
     "grpc-tools": "^1.12.4",
+    "nodemon": "^3.0.1",
+    "ts-node": "^10.9.1",
+    "ts-proto": "^1.156.7",
     "typescript": "^5.1.6"
   },
   "scripts": {
-    "dev": "npx tsc && node bin/index.js",
-    "grpc:generate": "node_modules/.bin/grpc_tools_node_protoc --js_out=import_style=commonjs,binary:./src/ --grpc_out=grpc_js:./src/ ./protos/arcctlpulumi.proto",
-    "grpc:generate-ts": "npx protoc --plugin=protoc-gen-ts=./node_modules/.bin/protoc-gen-ts --ts_out=grpc_js:./src/ ./protos/arcctlpulumi.proto"
+    "dev": "nodemon",
+    "grpc:generate": "./proto/build.sh"
   },
   "main": "src/index.js",
-  "type": "module",
   "dependencies": {
     "@grpc/grpc-js": "^1.9.1",
     "@grpc/grpc-js-xds": "^1.9.0",

@@ -1,5 +1,5 @@
 // package: 
-// file: protos/arcctlpulumi.proto
+// file: arcctlpulumi.proto
 
 /* tslint:disable */
 /* eslint-disable */
@@ -7,8 +7,8 @@
 import * as jspb from "google-protobuf";
 
 export class BuildRequest extends jspb.Message { 
-    getSerializeddocuments(): string;
-    setSerializeddocuments(value: string): BuildRequest;
+    getDirectory(): string;
+    setDirectory(value: string): BuildRequest;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): BuildRequest.AsObject;
@@ -22,13 +22,13 @@ export class BuildRequest extends jspb.Message {
 
 export namespace BuildRequest {
     export type AsObject = {
-        serializeddocuments: string,
+        directory: string,
     }
 }
 
 export class BuildResponse extends jspb.Message { 
-    getBuildsha(): string;
-    setBuildsha(value: string): BuildResponse;
+    getImage(): string;
+    setImage(value: string): BuildResponse;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): BuildResponse.AsObject;
@@ -42,13 +42,23 @@ export class BuildResponse extends jspb.Message {
 
 export namespace BuildResponse {
     export type AsObject = {
-        buildsha: string,
+        image: string,
     }
 }
 
 export class ApplyRequest extends jspb.Message { 
-    getSerializedpulumistate(): string;
-    setSerializedpulumistate(value: string): ApplyRequest;
+    getPulumiState(): string;
+    setPulumiState(value: string): ApplyRequest;
+    getDatacenterId(): string;
+    setDatacenterId(value: string): ApplyRequest;
+    getImage(): string;
+    setImage(value: string): ApplyRequest;
+
+    getInputsMap(): jspb.Map<string, string>;
+    clearInputsMap(): void;
+
+    getAccountCredentialsMap(): jspb.Map<string, string>;
+    clearAccountCredentialsMap(): void;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): ApplyRequest.AsObject;
@@ -62,13 +72,19 @@ export class ApplyRequest extends jspb.Message {
 
 export namespace ApplyRequest {
     export type AsObject = {
-        serializedpulumistate: string,
+        pulumiState: string,
+        datacenterId: string,
+        image: string,
+
+        inputsMap: Array<[string, string]>,
+
+        accountCredentialsMap: Array<[string, string]>,
     }
 }
 
 export class ApplyResponse extends jspb.Message { 
-    getSerializedpulumistate(): string;
-    setSerializedpulumistate(value: string): ApplyResponse;
+    getPulumiState(): string;
+    setPulumiState(value: string): ApplyResponse;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): ApplyResponse.AsObject;
@@ -82,6 +98,6 @@ export class ApplyResponse extends jspb.Message {
 
 export namespace ApplyResponse {
     export type AsObject = {
-        serializedpulumistate: string,
+        pulumiState: string,
     }
 }

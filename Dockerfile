@@ -13,5 +13,7 @@ ENV PATH=$PATH:/app/.pulumi/bin/
 
 COPY . .
 
+RUN npm ci
+
 # TODO: update to exclude dev
 CMD ["npm", "run", "dev"]
