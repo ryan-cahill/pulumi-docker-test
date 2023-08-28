@@ -5,14 +5,13 @@ export interface BuildInputs {
 export interface ApplyInputs {
   datacenter_id: string;
   state?: object;
-  inputs: object; 
+  inputs: [string, string][]; 
   image: string; // digest
   destroy?: boolean;
-  account_credentials: object; // TODO: pass these in as secrets, since accounts are gone
 }
 
 export abstract class BaseModule {
-  abstract build(inputs: BuildInputs): Promise<string>;
+  abstract build(inputs: BuildInputs): Promise<string>; // return type is the docker image hash
 
   abstract apply(inputs: ApplyInputs): Promise<string>; // return type is a string of pulumi state
 }

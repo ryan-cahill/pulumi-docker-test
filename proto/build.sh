@@ -2,6 +2,7 @@
 
 PROTO_DIR=./src/proto
 
+rm -rf ${PROTO_DIR}
 mkdir ${PROTO_DIR}
 
 # Generate JavaScript code

@@ -56,9 +56,8 @@ export class ApplyRequest extends jspb.Message {
 
     getInputsMap(): jspb.Map<string, string>;
     clearInputsMap(): void;
-
-    getAccountCredentialsMap(): jspb.Map<string, string>;
-    clearAccountCredentialsMap(): void;
+    getDestroy(): boolean;
+    setDestroy(value: boolean): ApplyRequest;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): ApplyRequest.AsObject;
@@ -77,8 +76,7 @@ export namespace ApplyRequest {
         image: string,
 
         inputsMap: Array<[string, string]>,
-
-        accountCredentialsMap: Array<[string, string]>,
+        destroy: boolean,
     }
 }
 

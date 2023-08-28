@@ -405,7 +405,7 @@ proto.ApplyRequest.toObject = function(includeInstance, msg) {
     datacenterId: jspb.Message.getFieldWithDefault(msg, 2, ""),
     image: jspb.Message.getFieldWithDefault(msg, 3, ""),
     inputsMap: (f = msg.getInputsMap()) ? f.toObject(includeInstance, undefined) : [],
-    accountCredentialsMap: (f = msg.getAccountCredentialsMap()) ? f.toObject(includeInstance, undefined) : []
+    destroy: jspb.Message.getBooleanFieldWithDefault(msg, 5, false)
   };
 
   if (includeInstance) {
@@ -461,10 +461,8 @@ proto.ApplyRequest.deserializeBinaryFromReader = function(msg, reader) {
          });
       break;
     case 5:
-      var value = msg.getAccountCredentialsMap();
-      reader.readMessage(value, function(message, reader) {
-        jspb.Map.deserializeBinary(message, reader, jspb.BinaryReader.prototype.readString, jspb.BinaryReader.prototype.readString, null, "", "");
-         });
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setDestroy(value);
       break;
     default:
       reader.skipField();
@@ -520,9 +518,12 @@ proto.ApplyRequest.serializeBinaryToWriter = function(message, writer) {
   if (f && f.getLength() > 0) {
     f.serializeBinary(4, writer, jspb.BinaryWriter.prototype.writeString, jspb.BinaryWriter.prototype.writeString);
   }
-  f = message.getAccountCredentialsMap(true);
-  if (f && f.getLength() > 0) {
-    f.serializeBinary(5, writer, jspb.BinaryWriter.prototype.writeString, jspb.BinaryWriter.prototype.writeString);
+  f = message.getDestroy();
+  if (f) {
+    writer.writeBool(
+      5,
+      f
+    );
   }
 };
 
@@ -604,25 +605,21 @@ proto.ApplyRequest.prototype.clearInputsMap = function() {
 
 
 /**
- * map<string, string> account_credentials = 5;
- * @param {boolean=} opt_noLazyCreate Do not create the map if
- * empty, instead returning `undefined`
- * @return {!jspb.Map<string,string>}
+ * optional bool destroy = 5;
+ * @return {boolean}
  */
-proto.ApplyRequest.prototype.getAccountCredentialsMap = function(opt_noLazyCreate) {
-  return /** @type {!jspb.Map<string,string>} */ (
-      jspb.Message.getMapField(this, 5, opt_noLazyCreate,
-      null));
+proto.ApplyRequest.prototype.getDestroy = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 5, false));
 };
 
 
 /**
- * Clears values from the map. The map will be non-null.
+ * @param {boolean} value
  * @return {!proto.ApplyRequest} returns this
  */
-proto.ApplyRequest.prototype.clearAccountCredentialsMap = function() {
-  this.getAccountCredentialsMap().clear();
-  return this;};
+proto.ApplyRequest.prototype.setDestroy = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 5, value);
+};
 
 
 

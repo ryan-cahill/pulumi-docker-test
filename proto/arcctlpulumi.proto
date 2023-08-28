@@ -18,7 +18,7 @@ message ApplyRequest {
   string datacenter_id = 2;
   string image = 3;
   map<string, string> inputs = 4;
-  map<string, string> account_credentials = 5;
+  bool destroy = 5;
 }
 
 message ApplyResponse {
