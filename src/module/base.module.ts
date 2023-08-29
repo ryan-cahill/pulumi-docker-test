@@ -15,7 +15,7 @@ export type ImageDigest = string;
 export type PulumiStateString = string;
 
 export abstract class BaseModule {
-  abstract build(inputs: BuildInputs): Promise<ImageDigest>;
+  abstract build(inputs: BuildInputs): Promise<{ digest?: ImageDigest, error?: string }>;
 
-  abstract apply(inputs: ApplyInputs): Promise<PulumiStateString>;
+  abstract apply(inputs: ApplyInputs): Promise<{ state?: PulumiStateString, error?: string }>;
 }

@@ -9,13 +9,17 @@ const buildImage = async (
   callback: sendUnaryData<BuildResponse>) => 
 {
   const pulumi_module = new PulumiModule();
-  const image = await pulumi_module.build({ 
+  const build_result = await pulumi_module.build({ 
     directory: call.request.toObject().directory
   });
   
-  const build_response = new BuildResponse();
-  build_response.setImage(image);
-  callback(null, build_response); // TODO: pass error?
+  if (build_result.digest) {
+    const build_response = new BuildResponse();
+    build_response.setImage(build_result.digest);
+    callback(null, build_response); 
+  } else if (build_result.error) {
+    callback({ details: build_result.error, code: 2 });
+  }
 }
 
 const applyPulumi = async (
@@ -25,7 +29,7 @@ const applyPulumi = async (
   const apply_request = call.request.toObject();
   const pulumi_module = new PulumiModule();
 
-  const apply_state = await pulumi_module.apply({ 
+  const apply_result = await pulumi_module.apply({ 
     datacenter_id: apply_request.datacenterId,
     image: apply_request.image,
     inputs: apply_request.inputsMap,
@@ -33,9 +37,13 @@ const applyPulumi = async (
     destroy: apply_request.destroy,
   });
 
-  const apply_response = new ApplyResponse();
-  apply_response.setPulumiState(apply_state);
-  callback(null, apply_response); // TODO: pass error?
+  if (apply_result.state) {
+    const apply_response = new ApplyResponse();
+    apply_response.setPulumiState(apply_result.state);
+    callback(null, apply_response); 
+  } else if (apply_result.error) {
+    callback({ details: apply_result.error, code: 2 });
+  }
 }
 
 function main() {

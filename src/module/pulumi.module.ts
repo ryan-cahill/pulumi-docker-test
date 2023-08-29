@@ -3,17 +3,20 @@ import { spawnSync } from 'child_process';
 
 export class PulumiModule extends BaseModule {
   // build an image that pulumi code can be run on
-  async build(inputs: BuildInputs): Promise<ImageDigest> {
-    const args = ['build', '--file', 'Dockerfile', inputs.directory, '--quiet'];
+  async build(inputs: BuildInputs): Promise<{ digest?: ImageDigest, error?: string }> { 
+    const args = ['build', inputs.directory, '--quiet'];
     const docker_result = spawnSync('docker', args, { cwd: inputs.directory });
+
+    let error;
     if (docker_result.error) {
-      throw docker_result.error;
+      error = docker_result.error.message;
     }
-    return docker_result.stdout.toString().replace('sha256:', '').trim();
+
+    return { digest: docker_result.stdout?.toString().replace('sha256:', '').trim(), error };
   }
 
   // run pulumi image and apply provided pulumi
-  async apply(inputs: ApplyInputs): Promise<PulumiStateString> {
+  async apply(inputs: ApplyInputs): Promise<{ state?: PulumiStateString, error?: string }> {
     // set variables as secrets for the pulumi stack
     let pulumi_config = '';
     if ((inputs.inputs || []).length) {
@@ -46,13 +49,17 @@ export class PulumiModule extends BaseModule {
         pulumi ${apply_or_destroy} --stack ${inputs.datacenter_id} --non-interactive --yes &&
         echo "${state_delimiter}" &&
         pulumi stack export --stack ${inputs.datacenter_id}
-      ` // TODO: how does state get returned if the apply fails? can the failure be caught?
+      `
     ];
-    const docker_result = spawnSync('docker', args, { stdio: 'pipe' });
+    const docker_result = spawnSync('docker', args);
+
+    let error;
     if (docker_result.error) {
-      throw docker_result.error;
+      error = docker_result.error.message;
+    } else if (docker_result.stdout && !docker_result.stdout.includes(state_delimiter)) {
+      error = docker_result.stdout.toString();
     }
 
-    return docker_result.stdout.toString().split(state_delimiter)[1];
+    return { state: docker_result.stdout.toString().split(state_delimiter)[1], error };
   }
 }
