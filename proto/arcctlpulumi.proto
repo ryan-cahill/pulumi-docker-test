@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+service ArcctlPulumi {
+  rpc Build(BuildRequest) returns (BuildResponse) {}
+  rpc Apply(ApplyRequest) returns (ApplyResponse) {}
+}
+
+message BuildRequest {
+  string directory = 1;
+}
+
+message BuildResponse {
+  string image = 1;
+}
+
+message ApplyRequest {
+  string pulumi_state = 1;
+  string datacenter_id = 2;
+  string image = 3;
+  map<string, string> inputs = 4;
+  bool destroy = 5;
+}
+
+message ApplyResponse {
+  string pulumi_state = 1;
+}
