@@ -15,9 +15,3 @@ COPY . .
 
 RUN npm ci
 RUN npm run grpc:generate
-
-CMD ["npm", "run", "dev"]
-# CMD ["npm", "run", "start"]
-
-# docker build . -t pulumi-in-docker
-# docker run -it --privileged -p 50051:50051 -v /var/run/docker.sock:/var/run/docker.sock -v ./src:/app/src -v /home/ryan/Code/arcctl-build-modules/test/yaml:/home/ryan/Code/arcctl-build-modules/test/yaml pulumi-in-docker

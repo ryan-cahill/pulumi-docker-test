@@ -1,14 +1,15 @@
 import { ApplyInputs, BaseModule, BuildInputs } from "./base.module";
-import { SpawnSyncReturns, spawnSync } from 'child_process';
-// import { State } from '@pulumi/pulumi' // TODO: import/use state interface for apply return type?
+import { spawnSync } from 'child_process';
 
 export class PulumiModule extends BaseModule {
   // build an image that pulumi code can be run on
   async build(inputs: BuildInputs): Promise<string> {
     const args = ['build', '--file', 'Dockerfile', inputs.directory, '--quiet'];
-    const output = spawnSync('docker', args, { cwd: inputs.directory }); 
-    this.checkCommandOutput(output);
-    return output.stdout.toString().replace('sha256:', '').trim();
+    const docker_result = spawnSync('docker', args, { cwd: inputs.directory });
+    if (docker_result.error) {
+      throw docker_result.error;
+    }
+    return docker_result.stdout.toString().replace('sha256:', '').trim();
   }
 
   // run pulumi image and apply provided pulumi
@@ -20,8 +21,9 @@ export class PulumiModule extends BaseModule {
       pulumi_config = `pulumi config --stack ${inputs.datacenter_id} set-all ${config_pairs} &&`;
     }
     const apply_or_destroy = inputs.destroy ? 'destroy' : 'up';
-    const environment = ['-e', 'PULUMI_CONFIG_PASSPHRASE='];
+    const environment = ['-e', 'PULUMI_CONFIG_PASSPHRASE=']; // ignore this pulumi requirement
 
+    // set pulumi state to the state passed in, if it was supplied
     const state_file = 'pulumi-state.json';
     const state_write_cmd = inputs.state ? `echo '${JSON.stringify(inputs.state)}' > ${state_file}` : '';
     const state_import_cmd = inputs.state ? `pulumi stack import --stack ${inputs.datacenter_id} --file ${state_file} &&` : '';
@@ -47,20 +49,10 @@ export class PulumiModule extends BaseModule {
       ` // TODO: how does state get returned if the apply fails? can the failure be caught?
     ];
     const docker_result = spawnSync('docker', args, { stdio: 'pipe' });
-    this.checkCommandOutput(docker_result); 
+    if (docker_result.error) {
+      throw docker_result.error;
+    }
 
     return docker_result.stdout.toString().split(state_delimiter)[1];
-  }
-
-  checkCommandOutput(output: SpawnSyncReturns<Buffer>) {
-    if (output.stderr?.length || output.error) {
-      if (output.stderr) {
-        throw new Error(output.stderr?.toString());
-      } else {
-        throw output.error;
-      }
-    } else if (output.stdout) {
-      console.log(output.stdout.toString());
-    }
   }
 }
