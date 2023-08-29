@@ -8,13 +8,15 @@ docker build . -t pulumi
 
 ## Running the container in dev mode
 
-Includes hot reloading
+Includes hot reloading. Note that the paths of the second volume will need to be changed.
 
 ```sh
 docker run -it -p 50051:50051 -v /var/run/docker.sock:/var/run/docker.sock -v /home/ryan/Code/arcctl-build-modules/test/yaml:/home/ryan/Code/arcctl-build-modules/test/yaml pulumi sh -c "npm run dev"
 ```
 
 ## Running the container in prod mode
+
+Note that the path of the second volume will need to be changed.
 
 ```sh
 docker run -it -p 50051:50051 -v /var/run/docker.sock:/var/run/docker.sock -v /home/ryan/Code/arcctl-build-modules/test/yaml:/home/ryan/Code/arcctl-build-modules/test/yaml pulumi sh -c "npm run start"
