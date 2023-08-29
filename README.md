@@ -34,7 +34,7 @@ Make sure that the container has started and prints out something like `Started 
 }
 ```
 
-### Sample apply request method (pulumi up)
+### Sample apply request message (pulumi up)
 
 ```json
 {
@@ -49,7 +49,7 @@ Make sure that the container has started and prints out something like `Started 
 }
 ```
 
-### Sample apply request method (pulumi destroy)
+### Sample apply request message (pulumi destroy)
 
 ```json
 {

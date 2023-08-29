@@ -1,9 +1,9 @@
-import { ApplyInputs, BaseModule, BuildInputs } from "./base.module";
+import { ApplyInputs, BaseModule, BuildInputs, ImageDigest, PulumiStateString } from "./base.module";
 import { spawnSync } from 'child_process';
 
 export class PulumiModule extends BaseModule {
   // build an image that pulumi code can be run on
-  async build(inputs: BuildInputs): Promise<string> {
+  async build(inputs: BuildInputs): Promise<ImageDigest> {
     const args = ['build', '--file', 'Dockerfile', inputs.directory, '--quiet'];
     const docker_result = spawnSync('docker', args, { cwd: inputs.directory });
     if (docker_result.error) {
@@ -13,7 +13,7 @@ export class PulumiModule extends BaseModule {
   }
 
   // run pulumi image and apply provided pulumi
-  async apply(inputs: ApplyInputs): Promise<string> {
+  async apply(inputs: ApplyInputs): Promise<PulumiStateString> {
     // set variables as secrets for the pulumi stack
     let pulumi_config = '';
     if ((inputs.inputs || []).length) {
