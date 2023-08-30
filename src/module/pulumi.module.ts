@@ -3,7 +3,7 @@ import { spawnSync } from 'child_process';
 
 export class PulumiModule extends BaseModule {
   // build an image that pulumi code can be run on
-  async build(inputs: BuildInputs): Promise<{ digest?: ImageDigest, error?: string }> { 
+  build(inputs: BuildInputs): { digest?: ImageDigest, error?: string } { 
     const args = ['build', inputs.directory, '--quiet'];
     const docker_result = spawnSync('docker', args, { cwd: inputs.directory });
 
@@ -16,7 +16,7 @@ export class PulumiModule extends BaseModule {
   }
 
   // run pulumi image and apply provided pulumi
-  async apply(inputs: ApplyInputs): Promise<{ state?: PulumiStateString, error?: string }> {
+  apply(inputs: ApplyInputs): { state?: PulumiStateString, error?: string } {
     // set variables as secrets for the pulumi stack
     let pulumi_config = '';
     if ((inputs.inputs || []).length) {

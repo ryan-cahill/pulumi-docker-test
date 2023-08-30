@@ -1,15 +1,14 @@
 import { PulumiModule } from "./module/pulumi.module"
-import { Server, ServerCredentials } from '@grpc/grpc-js';
-import { sendUnaryData, ServerUnaryCall } from "@grpc/grpc-js";
+import { Server, ServerCredentials, sendUnaryData, ServerUnaryCall } from '@grpc/grpc-js';
 import { BuildRequest, BuildResponse, ApplyRequest, ApplyResponse } from './proto/arcctlpulumi_pb';
 import { ArcctlPulumiService } from './proto/arcctlpulumi_grpc_pb';
 
-const buildImage = async (
+const buildImage = (
   call: ServerUnaryCall<BuildRequest, BuildResponse>,
   callback: sendUnaryData<BuildResponse>) => 
 {
   const pulumi_module = new PulumiModule();
-  const build_result = await pulumi_module.build({ 
+  const build_result = pulumi_module.build({ 
     directory: call.request.toObject().directory
   });
   
@@ -22,18 +21,18 @@ const buildImage = async (
   }
 }
 
-const applyPulumi = async (
+const applyPulumi = (
   call: ServerUnaryCall<ApplyRequest, ApplyResponse>,
   callback: sendUnaryData<ApplyResponse>) => 
 {
   const apply_request = call.request.toObject();
   const pulumi_module = new PulumiModule();
 
-  const apply_result = await pulumi_module.apply({ 
+  const apply_result = pulumi_module.apply({ 
     datacenter_id: apply_request.datacenterId,
     image: apply_request.image,
     inputs: apply_request.inputsMap,
-    state: apply_request.pulumiState ? JSON.parse(apply_request.pulumiState) : undefined,
+    state: apply_request.pulumiState ? JSON.parse(apply_request.pulumiState) as object : undefined,
     destroy: apply_request.destroy,
   });
 
